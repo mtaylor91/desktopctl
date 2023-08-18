@@ -3,6 +3,7 @@ module github.com/mtaylor91/desktopctl
 go 1.20
 
 require (
+	github.com/gorilla/mux v1.8.0
 	k8s.io/apimachinery v0.28.0
 	k8s.io/client-go v0.28.0
 	kubevirt.io/api v1.0.0

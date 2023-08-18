@@ -1,19 +1,28 @@
 package main
 
 import (
-	"context"
 	"flag"
-	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/mtaylor91/desktopctl/pkg/kubevirt/client/versioned"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"github.com/mtaylor91/desktopctl/pkg/service"
+	rest "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 )
 
-func main() {
+const inClusterToken = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+func getKubeConfig() (*rest.Config, error) {
 	var kubeconfig *string
+
+	if _, err := os.Stat(inClusterToken); err == nil {
+		return rest.InClusterConfig()
+	} else if err != nil && !os.IsNotExist(err) {
+		return nil, err
+	}
+
 	if home := homedir.HomeDir(); home != "" {
 		kubeconfig = flag.String("kubeconfig",
 			filepath.Join(home, ".kube", "config"),
@@ -25,7 +34,11 @@ func main() {
 
 	flag.Parse()
 
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	return clientcmd.BuildConfigFromFlags("", *kubeconfig)
+}
+
+func main() {
+	config, err := getKubeConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -35,15 +48,8 @@ func main() {
 		panic(err)
 	}
 
-	vms, err := clientset.KubevirtV1().
-		VirtualMachines("kubevirt").
-		List(context.TODO(), metav1.ListOptions{})
+	err = service.New(":8080", "kubevirt", clientset).Start()
 	if err != nil {
 		panic(err)
-	}
-
-	for _, instance := range vms.Items {
-		fmt.Printf("VM: %s (%s)\n",
-			instance.Name, instance.Status.PrintableStatus)
 	}
 }
