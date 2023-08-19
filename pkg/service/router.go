@@ -1,6 +1,10 @@
 package service
 
-import "github.com/gorilla/mux"
+import (
+	"net/http"
+
+	"github.com/gorilla/mux"
+)
 
 func router(s *Service) *mux.Router {
 	r := mux.NewRouter()
@@ -8,5 +12,6 @@ func router(s *Service) *mux.Router {
 	r.HandleFunc("/api/vms/{name}", s.getVM).Methods("GET")
 	r.HandleFunc("/api/vms/{name}/start", s.startVM).Methods("POST")
 	r.HandleFunc("/api/vms/{name}/stop", s.stopVM).Methods("POST")
+	r.PathPrefix("/").Handler(http.FileServer(staticFS()))
 	return r
 }
