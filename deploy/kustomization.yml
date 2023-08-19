@@ -1,0 +1,9 @@
+commonLabels:
+  app: desktopctl
+namespace: desktopctl
+resources:
+- namespace.yml
+- deployment.yml
+- service.yml
+- virtualservice.yml
+- rbac.yml

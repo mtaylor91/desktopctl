@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: desktopctl
+spec:
+  gateways:
+  - istio-gateways/home-mtaylor-io
+  hosts:
+  - vms.home.mtaylor.io
+  http:
+  - name: vms-routes
+    route:
+    - destination:
+        host: http.desktopctl.svc.cluster.local
+        port:
+          number: 80

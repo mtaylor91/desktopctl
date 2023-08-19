@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: desktopctl
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: desktopctl
+rules:
+- apiGroups: ["kubevirt.io"]
+  resources: ["virtualmachines"]
+  verbs: ["get", "watch", "list", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: desktopctl
+subjects:
+- kind: ServiceAccount
+  name: desktopctl
+roleRef:
+  kind: ClusterRole
+  name: desktopctl
+  apiGroup: rbac.authorization.k8s.io
