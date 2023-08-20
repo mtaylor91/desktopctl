@@ -55,6 +55,14 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.bg-green {
+  background-color: #1f442f;
+}
+
+.bg-red {
+  background-color: #551f1f;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -66,6 +74,12 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+  .bg-green {
+    background-color: #d6ffdd;
+  }
+  .bg-red {
+    background-color: #ffe1e0;
+  }
 }
 
 #app {
@@ -75,13 +89,30 @@ button:focus-visible {
   text-align: center;
 }
 
+.vms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .vm {
   display: flex;
-  margin-top: 2rem;
+  margin: 1rem;
+  padding: 1rem;
+  width: 85%;
   flex-direction: row;
   justify-content: space-between;
+  border-radius: 8px;
+}
+
+.vm-name, .vm-status {
+  padding: 0.6em;
 }
 
 .vm-name, .vm-status, .vm-actions {
-  flex: 1;
+  display: flex;
+  flex-basis: 6em;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

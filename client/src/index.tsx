@@ -8,8 +8,9 @@ function VM({ vm: {
   spec: { running },
   status: { printableStatus }
 }, refresh }) {
+  const bgClass = running ? 'bg-green' : 'bg-red';
   return (
-    <div class="vm">
+    <div class={`vm ${bgClass}`}>
       <div class="vm-name">{name}</div>
       <div class="vm-status">{printableStatus}</div>
       <div class="vm-actions">
@@ -42,13 +43,13 @@ function VMActions({ name, running, refresh }) {
 
   if (running) {
     return (
-      <button class="bg-red" onClick={stopVM}>
+      <button onClick={stopVM}>
         Stop
       </button>
     );
   } else {
     return (
-      <button class="bg-green" onClick={startVM}>
+      <button onClick={startVM}>
         Start
       </button>
     );
