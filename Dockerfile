@@ -1,6 +1,4 @@
-FROM images.home.mtaylor.io/base as build
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y golang
+FROM images.home.mtaylor.io/go as build
 RUN mkdir -p /build
 WORKDIR /build
 COPY . .
