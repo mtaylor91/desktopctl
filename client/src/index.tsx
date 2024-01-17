@@ -27,8 +27,8 @@ function VMActions({ name, running, refresh, token }) {
     evt.preventDefault();
     console.log(`Starting ${name}`);
     axios.post(`/api/vms/${name}/start`, { headers: {
-			'Authorization': `Bearer ${token}`
-		}}).then(({ data }) => {
+      'Authorization': `Bearer ${token}`
+    }}).then(({ data }) => {
       refresh();
     }).catch(err => {
       console.error(err);
@@ -39,8 +39,8 @@ function VMActions({ name, running, refresh, token }) {
     evt.preventDefault();
     console.log(`Stopping ${name}`);
     axios.post(`/api/vms/${name}/stop`, { headers: {
-			'Authorization': `Bearer ${token}`
-		}}).then(({ data }) => {
+      'Authorization': `Bearer ${token}`
+    }}).then(({ data }) => {
       refresh();
     }).catch(err => {
       console.error(err);
@@ -68,8 +68,8 @@ function App({ token }) {
 
   const listVMs = () => {
     axios.get('/api/vms', { headers: {
-			'Authorization': `Bearer ${token}`
-		}}).then(({ data }) => {
+      'Authorization': `Bearer ${token}`
+    }}).then(({ data }) => {
       setVMs(data.items);
     });
   };
