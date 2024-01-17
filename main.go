@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"os"
 	"path/filepath"
 
+	"github.com/coreos/go-oidc"
 	"github.com/mtaylor91/desktopctl/pkg/kubevirt/client/versioned"
 	"github.com/mtaylor91/desktopctl/pkg/service"
 	rest "k8s.io/client-go/rest"
@@ -38,6 +40,8 @@ func getKubeConfig() (*rest.Config, error) {
 }
 
 func main() {
+	ctx := context.Background()
+
 	config, err := getKubeConfig()
 	if err != nil {
 		panic(err)
@@ -48,7 +52,29 @@ func main() {
 		panic(err)
 	}
 
-	err = service.New(":8080", "kubevirt", clientset).Start()
+	namespace := os.Getenv("NAMESPACE")
+	if namespace == "" {
+		namespace = "kubevirt"
+	}
+
+	oidcClientID := os.Getenv("OIDC_CLIENT_ID")
+	oidcClientSecret := os.Getenv("OIDC_CLIENT_SECRET")
+	oidcIssuerURL := os.Getenv("OIDC_ISSUER_URL")
+	oidcRedirectURL := os.Getenv("OIDC_REDIRECT_URL")
+	oidcProvider, err := oidc.NewProvider(ctx, oidcIssuerURL)
+	if err != nil {
+		panic(err)
+	}
+
+	err = service.New(
+		":8080",
+		namespace,
+		oidcClientID,
+		oidcClientSecret,
+		oidcRedirectURL,
+		oidcProvider,
+		clientset,
+	).Start()
 	if err != nil {
 		panic(err)
 	}

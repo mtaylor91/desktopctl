@@ -8,6 +8,27 @@ spec:
       containers:
       - name: desktopctl
         image: images.home.mtaylor.io/desktopctl
+        env:
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: oidc
+              key: client-id
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oidc
+              key: client-secret
+        - name: OIDC_ISSUER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: oidc
+              key: issuer-url
+        - name: OIDC_REDIRECT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: oidc
+              key: redirect-url
         ports:
         - name: http
           protocol: TCP

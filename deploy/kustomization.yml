@@ -1,9 +1,31 @@
+
+configurations:
+- sealedsecrets.yml
+
 commonLabels:
   app: desktopctl
+
 namespace: desktopctl
+
+configMapGenerator:
+- name: oidc
+  literals:
+  - client-id=desktopctl
+  - issuer-url=https://login.mtaylor.io
+  - redirect-url=https://vms.home.mtaylor.io/auth/callback
+
+secretGenerator:
+- name: oidc
+  files:
+  - ./oidc-secret.json
+  options:
+    annotations:
+      config.kubernetes.io/local-config: "true"
+
 resources:
 - namespace.yml
 - deployment.yml
 - service.yml
 - virtualservice.yml
 - rbac.yml
+- oidc-secret.json

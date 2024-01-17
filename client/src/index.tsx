@@ -3,28 +3,32 @@ import { render } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import './style.css';
 
+
 function VM({ vm: {
   metadata: { name },
   spec: { running },
   status: { printableStatus }
-}, refresh }) {
+}, refresh, token }) {
   const bgClass = running ? 'bg-green' : 'bg-red';
   return (
     <div class={`vm ${bgClass}`}>
       <div class="vm-name">{name}</div>
       <div class="vm-status">{printableStatus}</div>
       <div class="vm-actions">
-        <VMActions name={name} running={running} refresh={refresh} />
+        <VMActions name={name} running={running} refresh={refresh} token={token} />
       </div>
     </div>
   );
 }
 
-function VMActions({ name, running, refresh }) {
+
+function VMActions({ name, running, refresh, token }) {
   const startVM = evt => {
     evt.preventDefault();
     console.log(`Starting ${name}`);
-    axios.post(`/api/vms/${name}/start`).then(({ data }) => {
+    axios.post(`/api/vms/${name}/start`, { headers: {
+			'Authorization': `Bearer ${token}`
+		}}).then(({ data }) => {
       refresh();
     }).catch(err => {
       console.error(err);
@@ -34,7 +38,9 @@ function VMActions({ name, running, refresh }) {
   const stopVM = evt => {
     evt.preventDefault();
     console.log(`Stopping ${name}`);
-    axios.post(`/api/vms/${name}/stop`).then(({ data }) => {
+    axios.post(`/api/vms/${name}/stop`, { headers: {
+			'Authorization': `Bearer ${token}`
+		}}).then(({ data }) => {
       refresh();
     }).catch(err => {
       console.error(err);
@@ -56,11 +62,14 @@ function VMActions({ name, running, refresh }) {
   }
 }
 
-export function App() {
+
+function App({ token }) {
   const [vms, setVMs] = useState([]);
 
   const listVMs = () => {
-    axios.get('/api/vms').then(({ data }) => {
+    axios.get('/api/vms', { headers: {
+			'Authorization': `Bearer ${token}`
+		}}).then(({ data }) => {
       setVMs(data.items);
     });
   };
@@ -75,10 +84,25 @@ export function App() {
     <>
       <h1>Virtual Machines</h1>
       <div class="vms">
-        {vms.map((vm, i) => <VM key={i} refresh={listVMs} vm={vm}/>)}
+        {vms.map((vm, i) => <VM key={i} refresh={listVMs} token={token} vm={vm} />)}
       </div>
     </>
   );
 }
 
-render(<App />, document.getElementById('app'));
+
+(async () => {
+	// Check for oauth2 token in local storage or url
+	const urlParams = new URLSearchParams(window.location.search);
+	const token = urlParams.get('token') || localStorage.getItem('token');
+
+	if (!token) {
+		// Redirect to login page
+		window.location.href = '/auth/login';
+	} else {
+		// Set token in local storage
+		localStorage.setItem('token', token);
+		// Render app
+		render(<App token={token} />, document.getElementById('app'));
+	}
+})();
