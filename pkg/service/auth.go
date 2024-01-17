@@ -47,7 +47,7 @@ func (s *Service) authCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Redirect to the main page with the token in the query string.
-	http.Redirect(w, r, "/?token="+rawIDToken, http.StatusFound)
+	http.Redirect(w, r, "/?token="+oauth2Token.AccessToken, http.StatusFound)
 }
 
 func (s *Service) authLogin(w http.ResponseWriter, r *http.Request) {
