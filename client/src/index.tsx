@@ -26,7 +26,7 @@ function VMActions({ name, running, refresh, token }) {
   const startVM = evt => {
     evt.preventDefault();
     console.log(`Starting ${name}`);
-    axios.post(`/api/vms/${name}/start`, { headers: {
+    axios.post(`/api/vms/${name}/start`, undefined, { headers: {
       'Authorization': `Bearer ${token}`
     }}).then(({ data }) => {
       refresh();
@@ -38,7 +38,7 @@ function VMActions({ name, running, refresh, token }) {
   const stopVM = evt => {
     evt.preventDefault();
     console.log(`Stopping ${name}`);
-    axios.post(`/api/vms/${name}/stop`, { headers: {
+    axios.post(`/api/vms/${name}/stop`, undefined, { headers: {
       'Authorization': `Bearer ${token}`
     }}).then(({ data }) => {
       refresh();
