@@ -8,16 +8,16 @@ commonLabels:
 namespace: desktopctl
 
 configMapGenerator:
-- name: oidc
-  literals:
+- literals:
   - client-id=desktopctl
   - issuer-url=https://login.mtaylor.io
   - redirect-url=https://vms.home.mtaylor.io/auth/callback
+  name: oidc
 
 secretGenerator:
-- name: oidc
-  files:
+- files:
   - ./oidc-secret.json
+  name: oidc
   options:
     annotations:
       config.kubernetes.io/local-config: "true"
@@ -29,3 +29,8 @@ resources:
 - virtualservice.yml
 - rbac.yml
 - oidc-secret.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+- name: images.home.mtaylor.io/desktopctl
+  newTag: 0.0.9
