@@ -32,6 +32,11 @@ function VMActions({ name, running, refresh, token }) {
       refresh();
     }).catch(err => {
       console.error(err);
+      if (err.response.status === 401) {
+        localStorage.removeItem('token');
+        // Redirect to login page
+        window.location.href = '/auth/login';
+      }
     })
   }
 
@@ -44,6 +49,11 @@ function VMActions({ name, running, refresh, token }) {
       refresh();
     }).catch(err => {
       console.error(err);
+      if (err.response.status === 401) {
+        localStorage.removeItem('token');
+        // Redirect to login page
+        window.location.href = '/auth/login';
+      }
     })
   }
 
@@ -71,6 +81,13 @@ function App({ token }) {
       'Authorization': `Bearer ${token}`
     }}).then(({ data }) => {
       setVMs(data.items);
+    }).catch(err => {
+      console.error(err);
+      if (err.response.status === 401) {
+        localStorage.removeItem('token');
+        // Redirect to login page
+        window.location.href = '/auth/login';
+      }
     });
   };
 

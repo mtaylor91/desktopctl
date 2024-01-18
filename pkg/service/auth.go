@@ -17,7 +17,7 @@ func (s *Service) auth(handler http.Handler) http.Handler {
 		// Verify the token.
 		_, err := s.verifier.Verify(r.Context(), bearerToken)
 		if err != nil {
-			http.Error(w, "failed to verify", http.StatusInternalServerError)
+			http.Error(w, "failed to verify", http.StatusUnauthorized)
 			return
 		}
 
